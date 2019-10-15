@@ -60,8 +60,12 @@ public class Gym {
         return s;
     }
 
-    public Gym() throws FileNotFoundException {
-        this.customers = MinaMetoder.loadCustomers();
-        this.saveFile = MinaMetoder.SaveFile();
+    public Gym()  {
+        try {
+            this.customers = MinaMetoder.loadCustomers();
+            this.saveFile = MinaMetoder.SaveFile();
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
     }
 }
