@@ -3,7 +3,7 @@ import Klasser.Gym;
 import javax.swing.*;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Gym gym = new Gym();
         while(true){
             JOptionPane.showMessageDialog(null, gym.stateOfCustomer(JOptionPane.showInputDialog("Kundens Namn eller Personnummer")));

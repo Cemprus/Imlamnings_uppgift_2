@@ -7,8 +7,6 @@ class Customer {
     private Long nummer;
     private LocalDate year;
 
-
-
     String getName() { return name; }
 
     Long getNummer() { return nummer; }

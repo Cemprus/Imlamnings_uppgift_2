@@ -1,7 +1,6 @@
 package Klasser;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.time.LocalDate;
 
 public class Gym {
@@ -10,7 +9,7 @@ public class Gym {
     enum State {IsCustomer, HasBeenCustomer, NeverBeenCustomer}
     private File saveFile;
 
-    private State hasCustomer(String name){
+    State hasCustomer(String name){
         try {
             Long number = Long.parseLong(name);
             for (Customer customer:this.customers){
@@ -61,11 +60,11 @@ public class Gym {
     }
 
     public Gym()  {
-        try {
-            this.customers = MinaMetoder.loadCustomers();
-            this.saveFile = MinaMetoder.SaveFile();
-        }catch (FileNotFoundException e){
-            e.printStackTrace();
-        }
+        this.customers = MinaMetoder.loadCustomers(MinaMetoder.SelectFile());
+        this.saveFile = MinaMetoder.SaveFile();
+    }
+    Gym(Customer[] customers, File SaveFile){
+        this.customers = customers;
+        this.saveFile = SaveFile;
     }
 }
