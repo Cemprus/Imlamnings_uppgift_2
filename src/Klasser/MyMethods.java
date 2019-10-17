@@ -24,6 +24,7 @@ public class MyMethods {
                 exit();
                 result = fc.showOpenDialog(null);
             }
+            System.out.println("Selected load file " + fc.getSelectedFile());
         }else if(i == 1){
             fc.setSelectedFile(new File("ForTrainer.txt"));
             result = fc.showSaveDialog(null);
@@ -31,8 +32,8 @@ public class MyMethods {
                 exit();
                 result = fc.showSaveDialog(null);
             }
+            System.out.println("Selected save file " + fc.getSelectedFile());
         }
-        System.out.println(fc.getSelectedFile());
         return fc.getSelectedFile();
     }
 }
