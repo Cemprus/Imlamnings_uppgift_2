@@ -50,7 +50,6 @@ public class Gym {
         while (inData == null){
             MyMethods.exit();
             inData = JOptionPane.showInputDialog("Customers name or personal number\nKundens namn eller personnummer");
-            System.out.println(inData);
         }
 
         switch (hasCustomer(inData)) {
