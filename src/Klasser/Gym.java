@@ -16,7 +16,7 @@ public class Gym {
 
 
 
-    public State hasCustomer(String name){
+    public State stateOfCustomer(String name){
         while (name == null){
             MyMethods.exit();
             name = JOptionPane.showInputDialog("Customers name or personal number\nKundens namn eller personnummer");
@@ -59,7 +59,7 @@ public class Gym {
 
 
 
-    public String stateOfCustomer(State inData){
+    public String message(State inData){
         switch (inData) {
             case IsCustomer:
                 return String.format("%1$s är en nyvarande medlem!\n%1$s is an active member!", currentCustomer.getName());

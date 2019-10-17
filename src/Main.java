@@ -9,7 +9,7 @@ public class Main {
 
         do {
             String str = JOptionPane.showInputDialog("Customers name or personal number\nKundens namn eller personnummer");
-            str = gym.stateOfCustomer(gym.hasCustomer(str));
+            str = gym.message(gym.stateOfCustomer(str));
             JOptionPane.showMessageDialog(null, str);
         }while (MyMethods.exit());
     }

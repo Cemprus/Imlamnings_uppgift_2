@@ -65,7 +65,7 @@ class GymTest {
     }
 
     @Test
-    void testingHasCustomer() {
+    void testingStateOfCustomer() {
         Customer[] customers = new Customer[] {
                 new Customer("Greger Ganache", 7608021234L, "2019-03-23"),
                 new Customer("Ida Idylle", 7911061234L, "2017-03-07")
@@ -82,16 +82,16 @@ class GymTest {
 
         Gym gym = new Gym(customers, f);
 
-        Assert.assertEquals(gym.hasCustomer("Greger Ganache"), Gym.State.IsCustomer);
-        Assert.assertEquals(gym.hasCustomer("7608021234"), Gym.State.IsCustomer);
-        Assert.assertEquals(gym.hasCustomer("Ida Idylle"), Gym.State.HasBeenCustomer);
-        Assert.assertEquals(gym.hasCustomer("7911061234"), Gym.State.HasBeenCustomer);
-        Assert.assertEquals(gym.hasCustomer("Ruscemp"), Gym.State.NeverBeenCustomer);
-        Assert.assertEquals(gym.hasCustomer("123456789000"), Gym.State.NeverBeenCustomer);
+        Assert.assertEquals(gym.stateOfCustomer("Greger Ganache"), Gym.State.IsCustomer);
+        Assert.assertEquals(gym.stateOfCustomer("7608021234"), Gym.State.IsCustomer);
+        Assert.assertEquals(gym.stateOfCustomer("Ida Idylle"), Gym.State.HasBeenCustomer);
+        Assert.assertEquals(gym.stateOfCustomer("7911061234"), Gym.State.HasBeenCustomer);
+        Assert.assertEquals(gym.stateOfCustomer("Ruscemp"), Gym.State.NeverBeenCustomer);
+        Assert.assertEquals(gym.stateOfCustomer("123456789000"), Gym.State.NeverBeenCustomer);
     }
 
     @Test
-    void testingStateOfCustomer() {
+    void testingMessage() {
         Customer[] customers = new Customer[] {
                 new Customer("Greger Ganache", 7608021234L, LocalDate.now().minusDays(1).toString()),
                 new Customer("Ida Idylle", 7911061234L, LocalDate.now().minusYears(3).toString())
@@ -108,11 +108,11 @@ class GymTest {
 
         Gym gym = new Gym(customers, f);
 
-        Assert.assertEquals("Greger Ganache är en nyvarande medlem!\nGreger Ganache is an active member!", gym.stateOfCustomer(gym.hasCustomer("Greger Ganache")));
-        Assert.assertEquals("Greger Ganache är en nyvarande medlem!\nGreger Ganache is an active member!", gym.stateOfCustomer(gym.hasCustomer("7608021234")));
-        Assert.assertEquals("Ida Idylle är en före detta kund!\nIda Idylle is an inactive member!", gym.stateOfCustomer(gym.hasCustomer("Ida Idylle")));
-        Assert.assertEquals("Ida Idylle är en före detta kund!\nIda Idylle is an inactive member!", gym.stateOfCustomer(gym.hasCustomer("7911061234")));
-        Assert.assertEquals("Ruscemp har aldrig varit en kund!\nRuscemp never has been a customer!", gym.stateOfCustomer(gym.hasCustomer("Ruscemp")));
-        Assert.assertEquals("123456789000 har aldrig varit en kund!\n123456789000 never has been a customer!", gym.stateOfCustomer(gym.hasCustomer("123456789000")));
+        Assert.assertEquals("Greger Ganache är en nyvarande medlem!\nGreger Ganache is an active member!", gym.message(gym.stateOfCustomer("Greger Ganache")));
+        Assert.assertEquals("Greger Ganache är en nyvarande medlem!\nGreger Ganache is an active member!", gym.message(gym.stateOfCustomer("7608021234")));
+        Assert.assertEquals("Ida Idylle är en före detta kund!\nIda Idylle is an inactive member!", gym.message(gym.stateOfCustomer("Ida Idylle")));
+        Assert.assertEquals("Ida Idylle är en före detta kund!\nIda Idylle is an inactive member!", gym.message(gym.stateOfCustomer("7911061234")));
+        Assert.assertEquals("Ruscemp har aldrig varit en kund!\nRuscemp never has been a customer!", gym.message(gym.stateOfCustomer("Ruscemp")));
+        Assert.assertEquals("123456789000 har aldrig varit en kund!\n123456789000 never has been a customer!", gym.message(gym.stateOfCustomer("123456789000")));
     }
 }
