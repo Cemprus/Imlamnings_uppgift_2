@@ -8,30 +8,39 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Scanner;
 
-class MinaMetoder {
+public class MinaMetoder {
     private final static JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
 
-    static File SelectFile(){
+    public static boolean exit(){
+        if (JOptionPane.showConfirmDialog(null, "Close program?", "Exit?", JOptionPane.YES_NO_OPTION) != JOptionPane.NO_OPTION){
+            System.out.println("User closed program!");
+            System.exit(0);
+        }
+        return true;
+    }
+
+    public static File selectLoadFile(){
         int result = fc.showOpenDialog(null);
-        if (result != JFileChooser.APPROVE_OPTION){
-            System.out.println("No File Selected!");
-            System.exit(0);
+        while (result != JFileChooser.APPROVE_OPTION){
+            exit();
+            result = fc.showOpenDialog(null);
         }
         System.out.println(fc.getSelectedFile());
         return fc.getSelectedFile();
     }
 
-    static File SaveFile(){
+    public static File selectSaveFile(){
+        fc.setSelectedFile(new File("ForTrainer.txt"));
         int result = fc.showSaveDialog(null);
-        if (result != JFileChooser.APPROVE_OPTION){
-            System.out.println("No File Selected!");
-            System.exit(0);
+        while (result != JFileChooser.APPROVE_OPTION){
+            exit();
+            result = fc.showSaveDialog(null);
         }
         System.out.println(fc.getSelectedFile());
         return fc.getSelectedFile();
     }
 
-    static Customer[] loadCustomers(File file) {
+    public static Customer[] loadCustomers(File file) {
         Scanner sc = null;
         try {
             sc = new Scanner(file);

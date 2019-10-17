@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 
 class GymTest {
 
@@ -15,7 +16,10 @@ class GymTest {
                 new Customer("Ida Idylle", 7911061234L, "2017-03-07")
         };
 
-        Gym gym = new Gym(customers, File.createTempFile("temp", null, null));
+        File f = File.createTempFile("temp", null);
+        f.deleteOnExit();
+
+        Gym gym = new Gym(customers, f);
 
         Assert.assertEquals(gym.hasCustomer("Greger Ganache"), Gym.State.IsCustomer);
         Assert.assertEquals(gym.hasCustomer("7608021234"), Gym.State.IsCustomer);
@@ -28,11 +32,14 @@ class GymTest {
     @Test
     void testingStateOfCustomer() throws IOException {
         Customer[] customers = new Customer[] {
-                new Customer("Greger Ganache", 7608021234L, "2019-03-23"),
-                new Customer("Ida Idylle", 7911061234L, "2017-03-07")
+                new Customer("Greger Ganache", 7608021234L, LocalDate.now().minusDays(1).toString()),
+                new Customer("Ida Idylle", 7911061234L, LocalDate.now().minusYears(3).toString())
         };
 
-        Gym gym = new Gym(customers, File.createTempFile("temp", null, null));
+        File f = File.createTempFile("temp", null);
+        f.deleteOnExit();
+
+        Gym gym = new Gym(customers, f);
 
         Assert.assertEquals("Greger Ganache är en nyvarande medlem", gym.stateOfCustomer("Greger Ganache"));
         Assert.assertEquals("Greger Ganache är en nyvarande medlem", gym.stateOfCustomer("7608021234"));

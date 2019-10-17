@@ -1,5 +1,6 @@
 package Klasser;
 
+import javax.swing.*;
 import java.io.File;
 import java.time.LocalDate;
 
@@ -10,6 +11,10 @@ public class Gym {
     private File saveFile;
 
     State hasCustomer(String name){
+        while (name == null){
+            MinaMetoder.exit();
+            name = JOptionPane.showInputDialog("Kundens Namn eller Personnummer");
+        }
         try {
             Long number = Long.parseLong(name);
             for (Customer customer:this.customers){
@@ -23,7 +28,7 @@ public class Gym {
                     }
                 }
             }
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e){
             for (Customer customer:this.customers){
                 this.currentCustomer = customer;
                 if (name.trim().toUpperCase().equals(customer.getName().trim().toUpperCase())){
@@ -35,9 +40,6 @@ public class Gym {
                     }
                 }
             }
-        }catch (NullPointerException e){
-            System.out.println("Usar closed programm!");
-            System.exit(0);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -59,11 +61,7 @@ public class Gym {
         return s;
     }
 
-    public Gym()  {
-        this.customers = MinaMetoder.loadCustomers(MinaMetoder.SelectFile());
-        this.saveFile = MinaMetoder.SaveFile();
-    }
-    Gym(Customer[] customers, File SaveFile){
+    public Gym(Customer[] customers, File SaveFile){
         this.customers = customers;
         this.saveFile = SaveFile;
     }

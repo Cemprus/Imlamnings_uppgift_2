@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Scanner;
 
 class MinaMetoderTest {
@@ -37,19 +38,25 @@ class MinaMetoderTest {
     @Test
     void testingSaveCustomer() throws IOException {
         Customer customer = new Customer("Nahema Ninsson", 7805211234L, "2019-01-04");
+        Customer customer1 = new Customer("Ruscemp", 1111111111L, "2018-12-15");
+        Customer customer2 = new Customer("Jaanek", 9906061479L, "2019-10-10");
         File file = new File("Test.txt");
+        file.deleteOnExit();
         MinaMetoder.saveCustomer(file, customer);
+        MinaMetoder.saveCustomer(file, customer1);
+        MinaMetoder.saveCustomer(file, customer2);
 
         Scanner sc = new Scanner(file);
         StringBuilder s = new StringBuilder();
         while (sc.hasNextLine()){
             s.append(sc.nextLine()).append("\n");
         }
+        sc.close();
         String expected = "First_Name Last_Name,      Personal_Number,     Last_Date_of_Visit\n" +
-                "Nahema Ninsson,            7805211234,          2019-10-15\n";
+                "Nahema Ninsson,            7805211234,          "+ LocalDate.now().toString() +"\n" +
+                "Ruscemp,            1111111111,          "+ LocalDate.now().toString() +"\n" +
+                "Jaanek,            9906061479,          "+ LocalDate.now().toString() +"\n";
 
         Assert.assertEquals(expected, s.toString());
-        sc.close();
-        file.delete();
     }
 }
