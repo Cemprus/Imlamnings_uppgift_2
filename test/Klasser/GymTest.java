@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Scanner;
@@ -37,38 +36,48 @@ class GymTest {
     }
 
     @Test
-    void testingSaveCustomer() throws FileNotFoundException {
+    void testingSaveCustomer() {
+        StringBuilder string = new StringBuilder();
         Customer customer = new Customer("Nahema Ninsson", 7805211234L, "2019-01-04");
-        Customer customer1 = new Customer("Ruscemp", 1111111111L, "2018-12-15");
-        Customer customer2 = new Customer("Jaanek", 9906061479L, "2019-10-10");
+        Customer customer1 = new Customer("Rus Cemp", 1111111111L, "2018-12-15");
+        Customer customer2 = new Customer("Jaanek Kerma", 9906061479L, "2019-10-10");
         File file = new File("Test.txt");
         file.deleteOnExit();
         Gym.saveCustomer(file, customer);
         Gym.saveCustomer(file, customer1);
         Gym.saveCustomer(file, customer2);
 
-        Scanner sc = new Scanner(file);
-        StringBuilder s = new StringBuilder();
-        while (sc.hasNext()){
-            s.append(sc.nextLine()).append("\n");
-        }
-        sc.close();
-        String expected = "First_Name Last_Name,      Personal_Number,     Last_Date_of_Visit\n" +
-                "Nahema Ninsson,            7805211234,          "+ LocalDate.now().toString() +"\n" +
-                "Ruscemp,            1111111111,          "+ LocalDate.now().toString() +"\n" +
-                "Jaanek,            9906061479,          "+ LocalDate.now().toString() +"\n";
 
-        Assert.assertEquals(expected, s.toString());
+        try (Scanner sc = new Scanner(file)){
+            while (sc.hasNext()){
+                string.append(sc.nextLine()).append("\n");
+            }
+        } catch (Exception e){
+            System.out.println("File not Found!");
+            System.exit(-1);
+        }
+
+        String expected = String.format("%-22s, %-15s, %-20s\n", "First Name  Last Name", "Personal Number", "Date of Visit") +
+                String.format("%-22s, %-15s, %-20s\n", "Nahema Ninsson", "7805211234", LocalDate.now().toString()) +
+                String.format("%-22s, %-15s, %-20s\n", "Rus Cemp", "1111111111", LocalDate.now().toString()) +
+                String.format("%-22s, %-15s, %-20s\n", "Jaanek Kerma", "9906061479", LocalDate.now().toString());
+        Assert.assertEquals(expected, string.toString());
     }
 
     @Test
-    void testingHasCustomer() throws IOException {
+    void testingHasCustomer() {
         Customer[] customers = new Customer[] {
                 new Customer("Greger Ganache", 7608021234L, "2019-03-23"),
                 new Customer("Ida Idylle", 7911061234L, "2017-03-07")
         };
 
-        File f = File.createTempFile("temp", null);
+        File f = null;
+        try {
+            f = File.createTempFile("temp", null);
+        } catch (IOException e) {
+            System.out.println("Could not create temp file!");
+            System.exit(-2);
+        }
         f.deleteOnExit();
 
         Gym gym = new Gym(customers, f);
@@ -82,22 +91,28 @@ class GymTest {
     }
 
     @Test
-    void testingStateOfCustomer() throws IOException {
+    void testingStateOfCustomer() {
         Customer[] customers = new Customer[] {
                 new Customer("Greger Ganache", 7608021234L, LocalDate.now().minusDays(1).toString()),
                 new Customer("Ida Idylle", 7911061234L, LocalDate.now().minusYears(3).toString())
         };
 
-        File f = File.createTempFile("temp", null);
+        File f = null;
+        try {
+            f = File.createTempFile("temp", null);
+        } catch (IOException e) {
+            System.out.println("Could not create temp file!");
+            System.exit(-2);
+        }
         f.deleteOnExit();
 
         Gym gym = new Gym(customers, f);
 
-        Assert.assertEquals("Greger Ganache är en nyvarande medlem", gym.stateOfCustomer("Greger Ganache"));
-        Assert.assertEquals("Greger Ganache är en nyvarande medlem", gym.stateOfCustomer("7608021234"));
-        Assert.assertEquals("Ida Idylle är en före detta kund", gym.stateOfCustomer("Ida Idylle"));
-        Assert.assertEquals("Ida Idylle är en före detta kund", gym.stateOfCustomer("7911061234"));
-        Assert.assertEquals("Ruscemp har aldrig varit en kund", gym.stateOfCustomer("Ruscemp"));
-        Assert.assertEquals("123456789000 har aldrig varit en kund", gym.stateOfCustomer("123456789000"));
+        Assert.assertEquals("Greger Ganache är en nyvarande medlem!\nGreger Ganache is an active member!", gym.stateOfCustomer(gym.hasCustomer("Greger Ganache")));
+        Assert.assertEquals("Greger Ganache är en nyvarande medlem!\nGreger Ganache is an active member!", gym.stateOfCustomer(gym.hasCustomer("7608021234")));
+        Assert.assertEquals("Ida Idylle är en före detta kund!\nIda Idylle is an inactive member!", gym.stateOfCustomer(gym.hasCustomer("Ida Idylle")));
+        Assert.assertEquals("Ida Idylle är en före detta kund!\nIda Idylle is an inactive member!", gym.stateOfCustomer(gym.hasCustomer("7911061234")));
+        Assert.assertEquals("Ruscemp har aldrig varit en kund!\nRuscemp never has been a customer!", gym.stateOfCustomer(gym.hasCustomer("Ruscemp")));
+        Assert.assertEquals("123456789000 har aldrig varit en kund!\n123456789000 never has been a customer!", gym.stateOfCustomer(gym.hasCustomer("123456789000")));
     }
 }
