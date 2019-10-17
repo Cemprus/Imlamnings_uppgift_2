@@ -14,6 +14,8 @@ public class Gym {
     enum State {IsCustomer, HasBeenCustomer, NeverBeenCustomer}
     private File saveFile;
 
+
+
     public State hasCustomer(String name){
         while (name == null){
             MyMethods.exit();
@@ -55,6 +57,8 @@ public class Gym {
         return State.NeverBeenCustomer;
     }
 
+
+
     public String stateOfCustomer(State inData){
         switch (inData) {
             case IsCustomer:
@@ -66,6 +70,8 @@ public class Gym {
         }
         return null;
     }
+
+
 
     private static int numberOfCustomers(File file){
         int number = 0;
@@ -80,6 +86,8 @@ public class Gym {
         }
         return number/2;
     }
+
+
 
     public static Customer[] loadCustomers(File file) {
         Customer[] customers = new Customer[numberOfCustomers(file)];
@@ -103,6 +111,8 @@ public class Gym {
         return customers;
     }
 
+
+
     static void saveCustomer(File file, Customer customer) {
         StringBuilder s = new StringBuilder();
         try {
@@ -121,6 +131,8 @@ public class Gym {
             e.printStackTrace();
         }
     }
+
+
 
     public Gym(Customer[] customers, File SaveFile){
         this.customers = customers;
