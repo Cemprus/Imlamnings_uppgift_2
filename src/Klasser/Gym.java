@@ -2,7 +2,11 @@ package Klasser;
 
 import javax.swing.*;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Scanner;
 
 public class Gym {
     private Customer[] customers;
@@ -11,17 +15,13 @@ public class Gym {
     private File saveFile;
 
     State hasCustomer(String name){
-        while (name == null){
-            MinaMetoder.exit();
-            name = JOptionPane.showInputDialog("Kundens Namn eller Personnummer");
-        }
         try {
             Long number = Long.parseLong(name);
             for (Customer customer:this.customers){
                 this.currentCustomer = customer;
                 if (number.equals(customer.getNummer())){
                     if (customer.getYear().isAfter(LocalDate.now().minusYears(1))){
-                        MinaMetoder.saveCustomer(saveFile, currentCustomer);
+                        saveCustomer(saveFile, currentCustomer);
                         return State.IsCustomer;
                     }else {
                         return State.HasBeenCustomer;
@@ -33,7 +33,7 @@ public class Gym {
                 this.currentCustomer = customer;
                 if (name.trim().toUpperCase().equals(customer.getName().trim().toUpperCase())){
                     if (customer.getYear().isAfter(LocalDate.now().minusYears(1))){
-                        MinaMetoder.saveCustomer(saveFile, currentCustomer);
+                        saveCustomer(saveFile, currentCustomer);
                         return State.IsCustomer;
                     } else {
                         return State.HasBeenCustomer;
@@ -47,18 +47,80 @@ public class Gym {
     }
 
     public String stateOfCustomer(String inData){
-        String s = null;
+        while (inData == null){
+            MyMethods.exit();
+            inData = JOptionPane.showInputDialog("Customers name or personal number\nKundens namn eller personnummer");
+            System.out.println(inData);
+        }
+
         switch (hasCustomer(inData)) {
             case IsCustomer:
-                s = String.format("%s är en nyvarande medlem", currentCustomer.getName());
-                break;
+                return String.format("%s är en nyvarande medlem", currentCustomer.getName());
             case HasBeenCustomer:
-                s = String.format("%s är en före detta kund", currentCustomer.getName());
-                break;
+                return String.format("%s är en före detta kund", currentCustomer.getName());
             case NeverBeenCustomer:
-                s = String.format("%s har aldrig varit en kund", inData);
+                return String.format("%s har aldrig varit en kund", inData);
         }
-        return s;
+        return null;
+    }
+
+    private static int numberOfCustomers(File file){
+        int number = 0;
+        try {
+            Scanner sc = new Scanner(file);
+            while(sc.hasNext()){
+                number += 1;
+                sc.nextLine();
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found!");
+            System.exit(0);
+        }
+        return number/2;
+    }
+
+    public static Customer[] loadCustomers(File file) {
+        Customer[] customers = new Customer[numberOfCustomers(file)];
+
+        try {
+            Scanner sc = new Scanner(file);
+            for (int i = 0; i<customers.length;i++){
+                String s = sc.nextLine();
+                String[] s2 = s.split(",", 2);
+                s = sc.nextLine();
+                try{
+                    customers[i] = new Customer(s2[1].trim(), Long.parseLong(s2[0].trim()), s);
+                } catch (NumberFormatException e){
+                    System.out.println("False data format in the file! It must be: \nyymmddxxxx, Fist_Name Last_Name\nyyyy-mm-dd");
+                }
+            }
+            sc.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found!");
+            System.exit(0);
+        }
+        return customers;
+    }
+
+    static void saveCustomer(File file, Customer customer) {
+        StringBuilder s = new StringBuilder();
+        try {
+            if(file.createNewFile()){
+                System.out.println("New saveFile Created Now");
+                s.append(String.format("%1s, %20s, %22s\n", "First_Name Last_Name", "Personal_Number", "Last_Date_of_Visit"));
+            }
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        s.append(String.format("%1s, %21s, %19s\n", customer.getName().trim(), customer.getNummer(), LocalDate.now().toString()));
+        try {
+            FileWriter fw = new FileWriter(file, true);
+            fw.write(s.toString());
+            fw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Gym(Customer[] customers, File SaveFile){
