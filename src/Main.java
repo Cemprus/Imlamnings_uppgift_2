@@ -8,9 +8,9 @@ public class Main {
         Gym gym = new Gym(Gym.loadCustomers(MyMethods.selectFile(MyMethods.load)), MyMethods.selectFile(MyMethods.save));
 
         do {
-            String s = JOptionPane.showInputDialog("Customers name or personal number\nKundens namn eller personnummer");
-            s = gym.stateOfCustomer(gym.hasCustomer(s));
-            JOptionPane.showMessageDialog(null, s);
+            String str = JOptionPane.showInputDialog("Customers name or personal number\nKundens namn eller personnummer");
+            str = gym.stateOfCustomer(gym.hasCustomer(str));
+            JOptionPane.showMessageDialog(null, str);
         }while (MyMethods.exit());
     }
 }
